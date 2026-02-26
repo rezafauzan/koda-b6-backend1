@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,9 +28,6 @@ func main() {
 		id := ctx.Param("id")
 		userFoundId := -1
 		for x := range users {
-			fmt.Println(users[x].Id)
-			fmt.Println(id)
-			fmt.Println(strconv.Itoa(users[x].Id) == id)
 			if strconv.Itoa(users[x].Id) == id {
 				userFoundId = x
 			}
@@ -87,9 +82,6 @@ func main() {
 		id := ctx.Param("id")
 		userFoundId := -1
 		for x := range users {
-			fmt.Println(users[x].Id)
-			fmt.Println(id)
-			fmt.Println(strconv.Itoa(users[x].Id) == id)
 			if strconv.Itoa(users[x].Id) == id {
 				userFoundId = x
 			}
@@ -101,6 +93,40 @@ func main() {
 				"messages": "User deleted!",
 				"users":    users,
 			})
+		} else {
+			ctx.JSON(400, gin.H{
+				"Success":  false,
+				"Messages": "User not found !",
+			})
+		}
+	})
+
+	r.PATCH("/users/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		userFoundId := -1
+
+		for x := range users {
+			if strconv.Itoa(users[x].Id) == id {
+				userFoundId = x
+			}
+		}
+
+		if userFoundId > -1 {
+			newData := User{}
+			err := ctx.ShouldBindJSON(&newData)
+			if err != nil {
+				ctx.JSON(400, gin.H{
+					"Success":  false,
+					"Messages": "Failed to edit user!",
+				})
+			} else {
+				users[userFoundId] = newData
+				ctx.JSON(200, gin.H{
+					"Success":  true,
+					"Messages": "Users edited",
+					"Users":    users[userFoundId],
+				})
+			}
 		} else {
 			ctx.JSON(400, gin.H{
 				"Success":  false,
