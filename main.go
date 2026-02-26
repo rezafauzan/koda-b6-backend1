@@ -1,8 +1,8 @@
 package main
 
 import (
-	"strconv"
 	"github.com/gin-gonic/gin"
+	"strconv"
 )
 
 type User struct {
@@ -120,12 +120,29 @@ func main() {
 					"Messages": "Failed to edit user!",
 				})
 			} else {
-				users[userFoundId] = newData
-				ctx.JSON(200, gin.H{
-					"Success":  true,
-					"Messages": "Users edited",
-					"Users":    users[userFoundId],
-				})
+				if newData.Email != "" {
+					users[userFoundId].Email = newData.Email
+				}
+				if newData.Password != "" {
+					users[userFoundId].Password = newData.Password
+				}
+				if newData.Fullname != "" {
+					users[userFoundId].Fullname = newData.Fullname
+				}
+				newId, err := strconv.Atoi(id)
+				if err != nil {
+					ctx.JSON(400, gin.H{
+						"Success":  false,
+						"Messages": "Edit user failed !",
+					})
+				} else {
+					users[userFoundId].Id = newId
+					ctx.JSON(200, gin.H{
+						"Success":  true,
+						"Messages": "Users edited",
+						"Users":    users[userFoundId],
+					})
+				}
 			}
 		} else {
 			ctx.JSON(400, gin.H{
