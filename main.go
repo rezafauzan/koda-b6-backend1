@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/matthewhartstonge/argon2"
 	"strconv"
 	"strings"
-
-	"github.com/gin-gonic/gin"
 )
 
 type Response struct {
@@ -100,6 +100,19 @@ func main() {
 						ResponseBody: "",
 					})
 					return
+				} else {
+					argon := argon2.DefaultConfig()
+					hash, err := argon.HashEncoded([]byte(data.Password))
+					if err != nil {
+						ctx.JSON(400, Response{
+							Success:      false,
+							Messages:     "System fail to proses password!",
+							ResponseBody: "",
+						})
+						return
+					} else {
+						data.Password = string(hash)
+					}
 				}
 
 				users = append(users, data)
