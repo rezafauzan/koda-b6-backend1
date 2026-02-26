@@ -1,6 +1,8 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 type User struct {
 	Id       int
@@ -30,13 +32,26 @@ func main() {
 				"Messages": "Failed to create users",
 			})
 		} else {
-			data.Id = len(users)
-			users = append(users, data)
-			ctx.JSON(200, gin.H{
-				"Success":  true,
-				"Messages": "Users created",
-				"Users": users,
-			})
+			emailExist := 0
+			for x := range users {
+				if users[x].Email == data.Email {
+					emailExist++
+				}
+			}
+			if emailExist == 0 {
+				data.Id = len(users)
+				users = append(users, data)
+				ctx.JSON(200, gin.H{
+					"Success":  true,
+					"Messages": "Users created",
+					"Users":    users,
+				})
+			} else {
+				ctx.JSON(200, gin.H{
+					"Success":  false,
+					"Messages": "Email allready used !",
+				})
+			}
 		}
 	})
 
