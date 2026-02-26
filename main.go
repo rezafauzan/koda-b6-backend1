@@ -133,6 +133,7 @@ func main() {
 				if users[x].Email == data.Email {
 					if users[x].Password == data.Password {
 						loggedInUser = users[x]
+						loggedInUser.Password = "Hidden"
 						ctx.JSON(200, Response{
 							Success:      false,
 							Messages:     "Login success! wellcome back " + users[x].Fullname,
