@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"strconv"
+	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Response struct {
@@ -72,6 +74,33 @@ func main() {
 			}
 			if emailExist == 0 {
 				data.Id = len(users)
+				if len(data.Fullname) < 4{
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "Fullname minimal 4 characters!",
+						ResponseBody: "",
+					})
+					return
+				}
+				
+				if len(data.Email) < 4 || strings.Contains(data.Email, "@") != true {
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "Email minimal 4 characters and must be a valid email!",
+						ResponseBody: "",
+					})
+					return
+				}
+				
+				if len(data.Password) < 8{
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "Password too weak minimal 8 characters!",
+						ResponseBody: "",
+					})
+					return
+				}
+
 				users = append(users, data)
 				ctx.JSON(200, Response{
 					Success:      true,

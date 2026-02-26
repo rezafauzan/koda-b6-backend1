@@ -8,6 +8,46 @@ Host: localhost:8888
 Content-Type: application/json
 
 {
+    "fullname": "Za",
+    "email": "rezafauzan@gmail.com",
+    "password": "test1246"
+}
+
+###
+
+###
+
+POST /users HTTP/1.1
+Host: localhost:8888
+Content-Type: application/json
+
+{
+    "fullname": "Reza",
+    "email": "rezafauzan",
+    "password": "test1246"
+}
+
+###
+
+###
+
+POST /users HTTP/1.1
+Host: localhost:8888
+Content-Type: application/json
+
+{
+    "fullname": "Reza",
+    "email": "rezafauzan@gmail.com",
+    "password": "test"
+}
+
+###
+
+POST /users HTTP/1.1
+Host: localhost:8888
+Content-Type: application/json
+
+{
     "fullname": "Reza Fauzan Adhima",
     "email": "rezafauzan@gmail.com",
     "password": "test1246"
