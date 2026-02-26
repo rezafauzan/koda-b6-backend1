@@ -21,6 +21,7 @@ type User struct {
 }
 
 var users []User
+var loggedInUser User
 
 func main() {
 	r := gin.Default()
@@ -74,7 +75,7 @@ func main() {
 			}
 			if emailExist == 0 {
 				data.Id = len(users)
-				if len(data.Fullname) < 4{
+				if len(data.Fullname) < 4 {
 					ctx.JSON(400, Response{
 						Success:      false,
 						Messages:     "Fullname minimal 4 characters!",
@@ -82,7 +83,7 @@ func main() {
 					})
 					return
 				}
-				
+
 				if len(data.Email) < 4 || strings.Contains(data.Email, "@") != true {
 					ctx.JSON(400, Response{
 						Success:      false,
@@ -91,8 +92,8 @@ func main() {
 					})
 					return
 				}
-				
-				if len(data.Password) < 8{
+
+				if len(data.Password) < 8 {
 					ctx.JSON(400, Response{
 						Success:      false,
 						Messages:     "Password too weak minimal 8 characters!",
@@ -113,6 +114,47 @@ func main() {
 					Messages:     "Email allready used !",
 					ResponseBody: "",
 				})
+			}
+		}
+	})
+
+	r.POST("/login", func(ctx *gin.Context) {
+		data := User{}
+		err := ctx.ShouldBindJSON(&data)
+		if err != nil {
+			ctx.JSON(400, Response{
+				Success:      false,
+				Messages:     "Login failed",
+				ResponseBody: "",
+			})
+			return
+		} else {
+			for x := range users {
+				if users[x].Email == data.Email {
+					if users[x].Password == data.Password {
+						loggedInUser = users[x]
+						ctx.JSON(200, Response{
+							Success:      false,
+							Messages:     "Login success! wellcome back " + users[x].Fullname,
+							ResponseBody: loggedInUser,
+						})
+						return
+					} else {
+						ctx.JSON(400, Response{
+							Success:      false,
+							Messages:     "Email or password wrong!",
+							ResponseBody: "",
+						})
+						return
+					}
+				} else {
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "Email or password wrong!",
+						ResponseBody: "",
+					})
+					return
+				}
 			}
 		}
 	})
@@ -209,7 +251,7 @@ func main() {
 				Messages:     "User not found !",
 				ResponseBody: "",
 			})
-			return 
+			return
 		}
 	})
 
