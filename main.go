@@ -121,25 +121,34 @@ func main() {
 	r.POST("/login", func(ctx *gin.Context) {
 		data := User{}
 		err := ctx.ShouldBindJSON(&data)
-		if err != nil {
-			ctx.JSON(400, Response{
-				Success:      false,
-				Messages:     "Login failed",
-				ResponseBody: "",
-			})
-			return
-		} else {
-			for x := range users {
-				if users[x].Email == data.Email {
-					if users[x].Password == data.Password {
-						loggedInUser = users[x]
-						loggedInUser.Password = "Hidden"
-						ctx.JSON(200, Response{
-							Success:      false,
-							Messages:     "Login success! wellcome back " + users[x].Fullname,
-							ResponseBody: loggedInUser,
-						})
-						return
+		if len(loggedInUser.Email) < 1 {
+			if err != nil {
+				ctx.JSON(400, Response{
+					Success:      false,
+					Messages:     "Login failed",
+					ResponseBody: "",
+				})
+				return
+			} else {
+				for x := range users {
+					if users[x].Email == data.Email {
+						if users[x].Password == data.Password {
+							loggedInUser = users[x]
+							loggedInUser.Password = "Hidden"
+							ctx.JSON(200, Response{
+								Success:      false,
+								Messages:     "Login success! wellcome back " + users[x].Fullname,
+								ResponseBody: loggedInUser,
+							})
+							return
+						} else {
+							ctx.JSON(400, Response{
+								Success:      false,
+								Messages:     "Email or password wrong!",
+								ResponseBody: "",
+							})
+							return
+						}
 					} else {
 						ctx.JSON(400, Response{
 							Success:      false,
@@ -148,15 +157,15 @@ func main() {
 						})
 						return
 					}
-				} else {
-					ctx.JSON(400, Response{
-						Success:      false,
-						Messages:     "Email or password wrong!",
-						ResponseBody: "",
-					})
-					return
 				}
 			}
+		} else {
+			ctx.JSON(200, Response{
+				Success:      false,
+				Messages:     "You allready logged in!!",
+				ResponseBody: loggedInUser,
+			})
+			return
 		}
 	})
 
