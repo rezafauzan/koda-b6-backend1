@@ -246,7 +246,19 @@ func main() {
 					}
 				}
 				if newData.Password != "" {
-					users[userFoundId].Password = newData.Password
+					argon := argon2.DefaultConfig()
+					hash, err := argon.HashEncoded([]byte(newData.Password))
+					if err != nil {
+						ctx.JSON(400, Response{
+							Success:      false,
+							Messages:     "System fail to proses password!",
+							ResponseBody: "",
+						})
+						return
+					} else {
+						newData.Password = string(hash)
+						users[userFoundId].Password = newData.Password
+					}
 				}
 				if newData.Fullname != "" {
 					users[userFoundId].Fullname = newData.Fullname
