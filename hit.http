@@ -9,6 +9,18 @@ Content-Type: application/json
 
 {
     "fullname": "Reza Fauzan Adhima",
+    "email": "rezafauzan@gmail.com",
+    "password": "test1246"
+}
+
+###
+
+POST /users HTTP/1.1
+Host: localhost:8888
+Content-Type: application/json
+
+{
+    "fullname": "Reza Fauzan",
     "email": "rezafauzan945@gmail.com",
     "password": "rezafauzan945@gmail.com"
 }
@@ -30,5 +42,15 @@ Host: localhost:8888
 Content-Type: application/json
 
 {
-    "password": "test1234"
+    "password": "test1246"
+}
+
+###
+
+PATCH /users/1 HTTP/1.1
+Host: localhost:8888
+Content-Type: application/json
+
+{
+    "password": "test1246"
 }

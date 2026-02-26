@@ -5,6 +5,12 @@ import (
 	"strconv"
 )
 
+type Response struct{
+	Success bool
+	Messages string
+	ResponseBody any
+}
+
 type User struct {
 	Id       int
 	Fullname string
@@ -18,9 +24,10 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/users", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"messages": "success",
-			"users":    users,
+		ctx.JSON(200, Response{
+			Success:  true,
+			Messages: "Success",
+			ResponseBody: users,
 		})
 	})
 
@@ -33,15 +40,16 @@ func main() {
 			}
 		}
 		if userFoundId > -1 {
-			ctx.JSON(200, gin.H{
-				"Success":  true,
-				"messages": "User found!",
-				"users":    users[userFoundId],
+			ctx.JSON(200, Response{
+				Success:  true,
+				Messages: "User found!",
+				ResponseBody: users[userFoundId],
 			})
 		} else {
-			ctx.JSON(400, gin.H{
-				"Success":  false,
-				"Messages": "User not found !",
+			ctx.JSON(400, Response{
+				Success:  false,
+				Messages: "User not found !",
+				ResponseBody: "",
 			})
 		}
 	})
@@ -50,9 +58,10 @@ func main() {
 		data := User{}
 		err := ctx.ShouldBindJSON(&data)
 		if err != nil {
-			ctx.JSON(400, gin.H{
-				"Success":  false,
-				"Messages": "Failed to create users",
+			ctx.JSON(400, Response{
+				Success:  false,
+				Messages: "Failed to create users",
+				ResponseBody: "",
 			})
 		} else {
 			emailExist := 0
@@ -64,15 +73,16 @@ func main() {
 			if emailExist == 0 {
 				data.Id = len(users)
 				users = append(users, data)
-				ctx.JSON(200, gin.H{
-					"Success":  true,
-					"Messages": "Users created",
-					"Users":    users,
+				ctx.JSON(200, Response{
+					Success:  true,
+					Messages: "Users created",
+					ResponseBody: users,
 				})
 			} else {
-				ctx.JSON(400, gin.H{
-					"Success":  false,
-					"Messages": "Email allready used !",
+				ctx.JSON(400, Response{
+					Success:  false,
+					Messages: "Email allready used !",
+					ResponseBody: "",
 				})
 			}
 		}
@@ -88,15 +98,16 @@ func main() {
 		}
 		if userFoundId > -1 {
 			users = append(users[:userFoundId], users[userFoundId+1:]...)
-			ctx.JSON(200, gin.H{
-				"Success":  true,
-				"messages": "User deleted!",
-				"users":    users,
+			ctx.JSON(200, Response{
+				Success:  true,
+				Messages: "User deleted!",
+				ResponseBody: users,
 			})
 		} else {
-			ctx.JSON(400, gin.H{
-				"Success":  false,
-				"Messages": "User not found !",
+			ctx.JSON(400, Response{
+				Success:  false,
+				Messages: "User not found !",
+				ResponseBody: "",
 			})
 		}
 	})
@@ -115,9 +126,10 @@ func main() {
 			newData := User{}
 			err := ctx.ShouldBindJSON(&newData)
 			if err != nil {
-				ctx.JSON(400, gin.H{
-					"Success":  false,
-					"Messages": "Failed to edit user!",
+				ctx.JSON(400, Response{
+					Success:  false,
+					Messages: "Failed to edit user!",
+					ResponseBody: "",
 				})
 			} else {
 				if newData.Email != "" {
@@ -131,23 +143,25 @@ func main() {
 				}
 				newId, err := strconv.Atoi(id)
 				if err != nil {
-					ctx.JSON(400, gin.H{
-						"Success":  false,
-						"Messages": "Edit user failed !",
+					ctx.JSON(400, Response{
+						Success:  false,
+						Messages: "Edit user failed !",
+						ResponseBody: "",
 					})
 				} else {
 					users[userFoundId].Id = newId
-					ctx.JSON(200, gin.H{
-						"Success":  true,
-						"Messages": "Users edited",
-						"Users":    users[userFoundId],
+					ctx.JSON(200, Response{
+						Success:  true,
+						Messages: "Users edited",
+						ResponseBody: users[userFoundId],
 					})
 				}
 			}
 		} else {
-			ctx.JSON(400, gin.H{
-				"Success":  false,
-				"Messages": "User not found !",
+			ctx.JSON(400, Response{
+				Success:  false,
+				Messages: "User not found !",
+				ResponseBody: "",
 			})
 		}
 	})
