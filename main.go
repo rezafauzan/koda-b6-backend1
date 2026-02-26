@@ -44,7 +44,7 @@ func main() {
 				"users":    users[userFoundId],
 			})
 		} else {
-			ctx.JSON(200, gin.H{
+			ctx.JSON(400, gin.H{
 				"Success":  false,
 				"Messages": "User not found !",
 			})
@@ -80,6 +80,32 @@ func main() {
 					"Messages": "Email allready used !",
 				})
 			}
+		}
+	})
+
+	r.DELETE("/users/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		userFoundId := -1
+		for x := range users {
+			fmt.Println(users[x].Id)
+			fmt.Println(id)
+			fmt.Println(strconv.Itoa(users[x].Id) == id)
+			if strconv.Itoa(users[x].Id) == id {
+				userFoundId = x
+			}
+		}
+		if userFoundId > -1 {
+			users = append(users[:userFoundId], users[userFoundId+1:]...)
+			ctx.JSON(200, gin.H{
+				"Success":  true,
+				"messages": "User deleted!",
+				"users":    users,
+			})
+		} else {
+			ctx.JSON(400, gin.H{
+				"Success":  false,
+				"Messages": "User not found !",
+			})
 		}
 	})
 
