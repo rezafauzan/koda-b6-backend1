@@ -82,6 +82,7 @@ Host: localhost:8888
 Content-Type: application/json
 
 {
+    "fullname": "Reza Fauzan Adhima",
     "password": "test1246"
 }
 
