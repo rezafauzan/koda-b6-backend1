@@ -30,10 +30,12 @@ func main() {
 				"Messages": "Failed to create users",
 			})
 		} else {
+			data.Id = len(users)
+			users = append(users, data)
 			ctx.JSON(200, gin.H{
 				"Success":  true,
 				"Messages": "Users created",
-				"User": data,
+				"Users": users,
 			})
 		}
 	})
