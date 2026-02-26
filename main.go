@@ -145,20 +145,21 @@ func main() {
 			} else {
 				for x := range users {
 					if users[x].Email == data.Email {
-						if users[x].Password == data.Password {
+						correct, err := argon2.VerifyEncoded([]byte(data.Password), []byte(users[x].Password))
+						if err != nil {
+							ctx.JSON(400, Response{
+								Success:      false,
+								Messages:     "Email or password wrong!",
+								ResponseBody: "",
+							})
+							return
+						} else if correct {
 							loggedInUser = users[x]
 							loggedInUser.Password = "Hidden"
 							ctx.JSON(200, Response{
 								Success:      false,
 								Messages:     "Login success! wellcome back " + users[x].Fullname,
 								ResponseBody: loggedInUser,
-							})
-							return
-						} else {
-							ctx.JSON(400, Response{
-								Success:      false,
-								Messages:     "Email or password wrong!",
-								ResponseBody: "",
 							})
 							return
 						}
