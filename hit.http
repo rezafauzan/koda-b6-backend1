@@ -98,6 +98,17 @@ Content-Type: application/json
 
 ###
 
+POST /login HTTP/1.1
+Host: localhost:8888
+Content-Type: application/json
+
+{
+    "email": "rezafauzan945@gmail.com",
+    "password": "test1246"
+}
+
+###
+
 PATCH /users/1 HTTP/1.1
 Host: localhost:8888
 Content-Type: application/json
