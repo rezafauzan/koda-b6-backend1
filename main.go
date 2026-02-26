@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,6 +24,31 @@ func main() {
 			"messages": "success",
 			"users":    users,
 		})
+	})
+
+	r.GET("/users/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		userFoundId := -1
+		for x := range users {
+			fmt.Println(users[x].Id)
+			fmt.Println(id)
+			fmt.Println(strconv.Itoa(users[x].Id) == id)
+			if strconv.Itoa(users[x].Id) == id {
+				userFoundId = x
+			}
+		}
+		if userFoundId > -1 {
+			ctx.JSON(200, gin.H{
+				"Success":  true,
+				"messages": "User found!",
+				"users":    users[userFoundId],
+			})
+		} else {
+			ctx.JSON(200, gin.H{
+				"Success":  false,
+				"Messages": "User not found !",
+			})
+		}
 	})
 
 	r.POST("/users", func(ctx *gin.Context) {
@@ -47,7 +75,7 @@ func main() {
 					"Users":    users,
 				})
 			} else {
-				ctx.JSON(200, gin.H{
+				ctx.JSON(400, gin.H{
 					"Success":  false,
 					"Messages": "Email allready used !",
 				})
