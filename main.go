@@ -15,7 +15,8 @@ type Response struct {
 
 type User struct {
 	Id       int
-	Fullname string
+	Firstname string
+	Lastname string
 	Email    string
 	Password string
 }
@@ -75,10 +76,19 @@ func main() {
 			}
 			if emailExist == 0 {
 				data.Id = len(users)
-				if len(data.Fullname) < 4 {
+				if len(data.Firstname) < 4 {
 					ctx.JSON(400, Response{
 						Success:      false,
-						Messages:     "Fullname minimal 4 characters!",
+						Messages:     "Firstname minimal 4 characters!",
+						ResponseBody: "",
+					})
+					return
+				}
+				
+				if len(data.Lastname) < 4 {
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "Lastname minimal 4 characters!",
 						ResponseBody: "",
 					})
 					return
@@ -158,7 +168,7 @@ func main() {
 							loggedInUser.Password = "Hidden"
 							ctx.JSON(200, Response{
 								Success:      false,
-								Messages:     "Login success! wellcome back " + users[x].Fullname,
+								Messages:     "Login success! wellcome back " + users[x].Firstname + " " + users[x].Lastname,
 								ResponseBody: loggedInUser,
 							})
 							return
@@ -261,9 +271,15 @@ func main() {
 						users[userFoundId].Password = newData.Password
 					}
 				}
-				if newData.Fullname != "" {
-					users[userFoundId].Fullname = newData.Fullname
+
+				if newData.Firstname != "" {
+					users[userFoundId].Firstname = newData.Firstname
 				}
+
+				if newData.Lastname != "" {
+					users[userFoundId].Lastname = newData.Lastname
+				}
+				
 				newId, err := strconv.Atoi(id)
 				if err != nil {
 					ctx.JSON(400, Response{
