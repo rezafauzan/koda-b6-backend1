@@ -118,6 +118,24 @@ func main() {
 					return
 				}
 
+				if len(data.Phone) < 10 {
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "Phone numbers minimal 10 digits",
+						ResponseBody: "",
+					})
+					return
+				}
+
+				if len(data.Address) < 10 {
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "Address minimal 10 characters",
+						ResponseBody: "",
+					})
+					return
+				}
+
 				if len(data.Password) < 8 {
 					ctx.JSON(400, Response{
 						Success:      false,
