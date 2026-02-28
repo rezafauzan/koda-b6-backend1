@@ -157,7 +157,8 @@ func main() {
 						data.Password = string(hash)
 					}
 				}
-
+				data.Avatar = "https://i.pravatar.cc/400?img=54"
+				data.Role = "Member"
 				users = append(users, data)
 				ctx.JSON(200, Response{
 					Success:      true,
