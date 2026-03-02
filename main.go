@@ -12,32 +12,135 @@ type Response struct {
 	Messages     string
 	ResponseBody any
 }
-// {
-//     "id": 0,
-//     "avatar": "https://i.pravatar.cc/400?img=54",
-//     "fullname": "Reza Fauzan Adhima",
-//     "email": "rezafauzan@gmail.com",
-//     "phone": "085183356072",
-//     "address": "rezafauzan@gmail.com",
-//     "password": "dGVzdDEyMzQ=",
-//     "role": "user",
-//     "cart": [],
-//     "historyOrders": []
-// }
+
+//	{
+//	    "id": 0,
+//	    "avatar": "https://i.pravatar.cc/400?img=54",
+//	    "fullname": "Reza Fauzan Adhima",
+//	    "email": "rezafauzan@gmail.com",
+//	    "phone": "085183356072",
+//	    "address": "rezafauzan@gmail.com",
+//	    "password": "dGVzdDEyMzQ=",
+//	    "role": "user",
+//	    "cart": [],
+//	    "historyOrders": []
+//	}
 type User struct {
-	Id       int
-	Avatar string
+	Id        int
+	Avatar    string
 	Firstname string
-	Lastname string
-	Email    string
-	Phone string
-	Address string
-	Password string
-	Role string
+	Lastname  string
+	Email     string
+	Phone     string
+	Address   string
+	Password  string
+	Role      string
 }
 
 var users []User
 var loggedInUser User
+
+func Register(ctx *gin.Context) {
+	data := User{}
+	err := ctx.ShouldBindJSON(&data)
+	if err != nil {
+		ctx.JSON(400, Response{
+			Success:      false,
+			Messages:     "Failed to create users",
+			ResponseBody: "",
+		})
+	} else {
+		emailExist := 0
+		for x := range users {
+			if users[x].Email == data.Email {
+				emailExist++
+			}
+		}
+		if emailExist == 0 {
+			data.Id = len(users)
+			if len(data.Firstname) < 4 {
+				ctx.JSON(400, Response{
+					Success:      false,
+					Messages:     "Firstname minimal 4 characters!",
+					ResponseBody: "",
+				})
+				return
+			}
+
+			if len(data.Lastname) < 4 {
+				ctx.JSON(400, Response{
+					Success:      false,
+					Messages:     "Lastname minimal 4 characters!",
+					ResponseBody: "",
+				})
+				return
+			}
+
+			if len(data.Email) < 4 || strings.Contains(data.Email, "@") != true {
+				ctx.JSON(400, Response{
+					Success:      false,
+					Messages:     "Email minimal 4 characters and must be a valid email!",
+					ResponseBody: "",
+				})
+				return
+			}
+
+			if len(data.Phone) < 10 {
+				ctx.JSON(400, Response{
+					Success:      false,
+					Messages:     "Phone numbers minimal 10 digits",
+					ResponseBody: "",
+				})
+				return
+			}
+
+			if len(data.Address) < 10 {
+				ctx.JSON(400, Response{
+					Success:      false,
+					Messages:     "Address minimal 10 characters",
+					ResponseBody: "",
+				})
+				return
+			}
+
+			if len(data.Password) < 8 {
+				ctx.JSON(400, Response{
+					Success:      false,
+					Messages:     "Password too weak minimal 8 characters!",
+					ResponseBody: "",
+				})
+				return
+			} else {
+				argon := argon2.DefaultConfig()
+				hash, err := argon.HashEncoded([]byte(data.Password))
+				if err != nil {
+					ctx.JSON(400, Response{
+						Success:      false,
+						Messages:     "System fail to proses password!",
+						ResponseBody: "",
+					})
+					return
+				} else {
+					data.Password = string(hash)
+				}
+			}
+			data.Avatar = "https://i.pravatar.cc/400?img=54"
+			data.Role = "Member"
+			users = append(users, data)
+			ctx.JSON(200, Response{
+				Success:      true,
+				Messages:     "Users created",
+				ResponseBody: users,
+			})
+		} else {
+			ctx.JSON(400, Response{
+				Success:      false,
+				Messages:     "Email allready used !",
+				ResponseBody: "",
+			})
+		}
+	}
+}
 
 func main() {
 	r := gin.Default()
@@ -73,107 +176,7 @@ func main() {
 		}
 	})
 
-	r.POST("/users", func(ctx *gin.Context) {
-		data := User{}
-		err := ctx.ShouldBindJSON(&data)
-		if err != nil {
-			ctx.JSON(400, Response{
-				Success:      false,
-				Messages:     "Failed to create users",
-				ResponseBody: "",
-			})
-		} else {
-			emailExist := 0
-			for x := range users {
-				if users[x].Email == data.Email {
-					emailExist++
-				}
-			}
-			if emailExist == 0 {
-				data.Id = len(users)
-				if len(data.Firstname) < 4 {
-					ctx.JSON(400, Response{
-						Success:      false,
-						Messages:     "Firstname minimal 4 characters!",
-						ResponseBody: "",
-					})
-					return
-				}
-				
-				if len(data.Lastname) < 4 {
-					ctx.JSON(400, Response{
-						Success:      false,
-						Messages:     "Lastname minimal 4 characters!",
-						ResponseBody: "",
-					})
-					return
-				}
-
-				if len(data.Email) < 4 || strings.Contains(data.Email, "@") != true {
-					ctx.JSON(400, Response{
-						Success:      false,
-						Messages:     "Email minimal 4 characters and must be a valid email!",
-						ResponseBody: "",
-					})
-					return
-				}
-
-				if len(data.Phone) < 10 {
-					ctx.JSON(400, Response{
-						Success:      false,
-						Messages:     "Phone numbers minimal 10 digits",
-						ResponseBody: "",
-					})
-					return
-				}
-
-				if len(data.Address) < 10 {
-					ctx.JSON(400, Response{
-						Success:      false,
-						Messages:     "Address minimal 10 characters",
-						ResponseBody: "",
-					})
-					return
-				}
-
-				if len(data.Password) < 8 {
-					ctx.JSON(400, Response{
-						Success:      false,
-						Messages:     "Password too weak minimal 8 characters!",
-						ResponseBody: "",
-					})
-					return
-				} else {
-					argon := argon2.DefaultConfig()
-					hash, err := argon.HashEncoded([]byte(data.Password))
-					if err != nil {
-						ctx.JSON(400, Response{
-							Success:      false,
-							Messages:     "System fail to proses password!",
-							ResponseBody: "",
-						})
-						return
-					} else {
-						data.Password = string(hash)
-					}
-				}
-				data.Avatar = "https://i.pravatar.cc/400?img=54"
-				data.Role = "Member"
-				users = append(users, data)
-				ctx.JSON(200, Response{
-					Success:      true,
-					Messages:     "Users created",
-					ResponseBody: users,
-				})
-			} else {
-				ctx.JSON(400, Response{
-					Success:      false,
-					Messages:     "Email allready used !",
-					ResponseBody: "",
-				})
-			}
-		}
-	})
+	r.POST("/users", Register)
 
 	r.POST("/login", func(ctx *gin.Context) {
 		data := User{}
@@ -313,7 +316,7 @@ func main() {
 				if newData.Lastname != "" {
 					users[userFoundId].Lastname = newData.Lastname
 				}
-				
+
 				newId, err := strconv.Atoi(id)
 				if err != nil {
 					ctx.JSON(400, Response{

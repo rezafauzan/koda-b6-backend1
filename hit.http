@@ -60,8 +60,11 @@ Host: localhost:8888
 Content-Type: application/json
 
 {
-    "fullname": "Reza Fauzan",
+    "firstname": "Reza",
+    "lastname": "Fauzan",
     "email": "rezafauzan945@gmail.com",
+    "phone": "+6285183356072",
+    "address": "Jl. Terusan Soreang Cipatik",
     "password": "rezafauzan945@gmail.com"
 }
 
