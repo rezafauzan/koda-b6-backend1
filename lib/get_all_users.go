@@ -8,6 +8,12 @@ import (
 	"rezafauzan/koda-b6-backend1/data"
 )
 
+// @Summary Get all registered users
+// @Description Get all registered users
+// @Tags user
+// @Produce json
+// @Success 200 {object} data.Response
+// @Router /users [GET]
 func GetAllUsers(ctx *gin.Context) {
 	conn, err := DatabaseHandler()
 	if err != nil {
