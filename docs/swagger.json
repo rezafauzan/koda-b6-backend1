@@ -1,0 +1,47 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Backend app built with gin swagger",
+        "title": "Koda-B6-Backend1",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8888",
+    "basePath": "/",
+    "paths": {
+        "/users": {
+            "get": {
+                "description": "Get all registered users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get all registered users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/data.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "data.Response": {
+            "type": "object",
+            "properties": {
+                "messages": {
+                    "type": "string"
+                },
+                "responseBody": {},
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}
