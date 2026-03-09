@@ -8,6 +8,27 @@ definitions:
       success:
         type: boolean
     type: object
+  data.UserStruct:
+    properties:
+      address:
+        type: string
+      avatar:
+        type: string
+      email:
+        type: string
+      firstname:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+    type: object
 host: localhost:8888
 info:
   contact: {}
@@ -26,6 +47,35 @@ paths:
           schema:
             $ref: '#/definitions/data.Response'
       summary: Get all registered users
+      tags:
+      - user
+  /users/:id:
+    patch:
+      description: Update user detail by id
+      parameters:
+      - description: user_id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: fields
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/data.UserStruct'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/data.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/data.Response'
+      summary: Update User By Id
       tags:
       - user
 swagger: "2.0"
