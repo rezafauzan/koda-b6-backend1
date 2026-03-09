@@ -8,9 +8,9 @@ type UserRepository struct{
 
 var Users []models.User
 
-func NewUserRepository() *UserRepository{
+func NewUserRepository(db *[]models.User) *UserRepository{
 	return &UserRepository{
-		db: &Users,
+		db: db,
 	}
 }
 
