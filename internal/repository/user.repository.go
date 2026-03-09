@@ -13,3 +13,7 @@ func NewUserRepository() *UserRepository{
 		db: &Users,
 	}
 }
+
+func (r *UserRepository) GetAll() []models.User{
+	return *r.db
+}
