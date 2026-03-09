@@ -1,13 +1,13 @@
 package models
 
-type UserStruct struct {
-	Id        int
-	Avatar    string
-	Firstname string
-	Lastname  string
-	Email     string
-	Phone     string
-	Address   string
-	Password  string
-	Role      string
+type User struct {
+	Id        int `json:"id"`
+	Avatar    string `json:"avatar"`
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Address   string `json:"address"`
+	Password  string `json:"password"`
+	Role      string `json:"role"`
 }
