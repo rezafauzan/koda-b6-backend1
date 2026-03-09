@@ -1,0 +1,26 @@
+package handlers
+
+import (
+	"net/http"
+	"rezafauzan/koda-b6-backend1/internal/services"
+
+	"github.com/gin-gonic/gin"
+)
+
+type UserHandler struct {
+	service *services.UserService
+}
+
+func NewUserHandler(service *services.UserService) *UserHandler{
+	return &UserHandler{
+		service: service,
+	}
+}
+
+func (handler *UserHandler) GetAll(ctx *gin.Context){
+	ctx.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "List all users",
+		"results": handler.service.GetAll(),
+	})
+}
