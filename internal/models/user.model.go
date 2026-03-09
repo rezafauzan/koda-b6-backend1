@@ -28,3 +28,16 @@ type GetUserResponse struct{
 	Phone     string `json:"phone"`
 	Address   string `json:"address"`
 }
+
+type UpdateUserRequest struct{
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Address   string `json:"address"`
+	Password  string `json:"password"`
+}
+
+type DeleteUserRequest struct{
+	Id int `json:"id"`
+}
